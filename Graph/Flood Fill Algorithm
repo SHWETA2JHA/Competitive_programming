@@ -1,0 +1,33 @@
+/*
+An image is represented by a 2-D array of integers, each integer representing the pixel value of the image.
+
+Given a coordinate (sr, sc) representing the starting pixel (row and column) of the flood fill, and a pixel value newColor, "flood fill" the image.*/
+
+vector<vector<int>> ans;
+int delRow[4]={-1,0,1,0};
+int delCol[4]={0,1,0,-1};
+vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int newColor) {
+        int ini=image[sr][sc];
+        ans=image;
+       
+        dfs(sr,sc,image,newColor,ini);
+        return ans;
+        
+    }
+    void dfs(int sr,int sc,vector<vector<int>>& image,int newColor,int ini)
+    {
+        ans[sr][sc]=newColor;
+        int n=image.size();
+        int m=image[0].size();
+        
+        for(int i=0;i<4;i++)
+        {
+            int nrow=sr+delRow[i];
+            int ncol=sc+delCol[i];
+            
+            if(nrow>=0&&nrow<n&&ncol>=0&&ncol<m&&ans[nrow][ncol]!=newColor&&image[nrow][ncol]==ini)
+            {
+                dfs(nrow,ncol,image,newColor,ini);
+            }
+       }
+ }
