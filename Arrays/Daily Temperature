@@ -1,0 +1,28 @@
+/*Given an array of integers temperatures represents the daily temperatures, return an array answer such that answer[i] is the number of days you have to wait after the ith day to get a warmer temperature. If there is no future day for which this is possible, keep answer[i] == 0 instead.*/
+
+
+class Solution {
+    public int[] dailyTemperatures(int[] temp) 
+    {
+        int n=temp.length;
+        int[] res=new int[n];
+        res[n-1]=0;
+        if(n==1)
+        return res;
+
+        for(int i=n-2;i>=0;i--)
+        {
+            int k=i+1;
+            while(temp[i]>=temp[k]&&res[k]!=0)
+            {
+                k+=res[k];
+            }
+            if(temp[i]<temp[k]){
+                res[i]=k-i;
+            }
+        }
+
+    return res;
+        
+    }
+}
