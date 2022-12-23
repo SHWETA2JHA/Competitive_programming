@@ -1,0 +1,21 @@
+/*Given the root of a binary tree, return the leftmost value in the last row of the tree.*/
+
+class Solution {
+public:
+    int findBottomLeftValue(TreeNode* root) {
+            vector<int> v;
+            solve(root,v,0);
+            int n=v.size()-1;
+            return v[n];
+    }
+    void solve(TreeNode* root,vector<int>& v,int l)
+    {
+        if(root==NULL)
+        return;
+        if(v.size()==l)
+        v.push_back(root->val);
+
+        solve(root->left,v,l+1);
+        solve(root->right,v,l+1);
+    }
+};
