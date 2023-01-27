@@ -1,0 +1,44 @@
+/*
+Concatenated Words
+
+Given an array of strings words (without duplicates), return all the concatenated words in the given list of words.
+
+A concatenated word is defined as a string that is comprised entirely of at least two shorter words in the given array.
+
+ 
+Input: words = ["cat","cats","catsdogcats","dog","dogcatsdog","hippopotamuses","rat","ratcatdogcat"]
+Output: ["catsdogcats","dogcatsdog","ratcatdogcat"]
+Explanation: "catsdogcats" can be concatenated by "cats", "dog" and "cats"; 
+"dogcatsdog" can be concatenated by "dog", "cats" and "dog"; 
+"ratcatdogcat" can be concatenated by "rat", "cat", "dog" and "cat".
+
+
+
+*/
+
+class Solution {
+public:
+    vector<string> findAllConcatenatedWordsInADict(vector<string>& words) {
+        vector<string>res;
+        unordered_set<string>st;
+        for(string word : words)st.insert(word);
+
+        for(string word : words){
+            int n=word.size();
+            vector<int>dp(n+1,0);
+            dp[0]=1;
+            for(int i=0;i<n;i++){
+                if(!dp[i])continue;
+                for(int j=i+1;j<=n;j++){
+                    if(j-i<n &&  st.count(word.substr(i,j-i)))
+                        dp[j]=1;
+                }
+                if(dp[n]){
+                    res.push_back(word);
+                    break;
+                }
+            }
+        }
+        return res;
+    }
+};
