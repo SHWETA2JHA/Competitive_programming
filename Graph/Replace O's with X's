@@ -1,0 +1,54 @@
+/*
+130. Surrounded Regions
+Given an m x n matrix board containing 'X' and 'O', capture all regions that are 4-directionally surrounded by 'X'.
+A region is captured by flipping all 'O's into 'X's in that surrounded region.
+
+Input: board = [["X","X","X","X"],["X","O","O","X"],["X","X","O","X"],["X","O","X","X"]]
+Output: [["X","X","X","X"],["X","X","X","X"],["X","X","X","X"],["X","O","X","X"]]
+Explanation: Notice that an 'O' should not be flipped if:
+- It is on the border, or
+- It is adjacent to an 'O' that should not be flipped.
+The bottom 'O' is on the border, so it is not flipped.
+The other three 'O' form a surrounded region, so they are flipped.
+
+Input: board = [["X"]]
+Output: [["X"]]
+
+*/
+
+
+class Solution {
+public:
+
+    void dfs(int i, int j, vector<vector<int>>&vis, vector<vector<char>>& board,int r, int c){
+        vis[i][j]=1;
+        vector<int>dir={-1,0,1,0,-1};
+        for(int k=0;k<4;k++){
+            int nr=i+dir[k];
+            int nc=j+dir[k+1];
+            if(nr>=0 && nr<r && nc>=0 && nc<c && vis[nr][nc]==0 && board[nr][nc]=='O'){
+                dfs(nr,nc,vis,board,r,c);
+            }
+        }
+    }
+
+    void solve(vector<vector<char>>& board) {
+        int r=board.size(),c=board[0].size();
+        vector<vector<int>>vis(r,vector<int>(c,0));
+        for(int i=0;i<r;i++){
+            for(int j=0;j<c;j++){
+                if((i==0 || j==0 || i==r-1 || j==c-1) && board[i][j]=='O'){
+                    dfs(i,j,vis,board,r,c);
+                }
+            }
+        }
+        for(int i=0;i<r;i++){
+            for(int j=0;j<c;j++){
+                if(board[i][j]=='O' && vis[i][j]==0){
+                    board[i][j]='X';
+                }
+            }
+        }
+        
+    }
+};
