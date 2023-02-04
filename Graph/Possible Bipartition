@@ -1,0 +1,70 @@
+/*
+Possible Bipartition
+We want to split a group of n people (labeled from 1 to n) into two groups of any size. Each person may dislike some other people, and they should not go into the same group.
+
+Given the integer n and the array dislikes where dislikes[i] = [ai, bi] indicates that the person labeled ai does not like the person labeled bi, return true if it is possible to split everyone into two groups in this way.
+
+Input: n = 4, dislikes = [[1,2],[1,3],[2,4]]
+Output: true
+Explanation: The first group has [1,4], and the second group has [2,3].
+
+Input: n = 3, dislikes = [[1,2],[1,3],[2,3]]
+Output: false
+Explanation: We need at least 3 groups to divide them. We cannot put them in two groups.
+
+
+*/
+
+class Solution {
+public:
+
+    bool bfs(int node, vector<vector<int>>& adj, int V, vector<int>&vis){
+        vis[node]=0;
+        queue<int>q;
+        q.push(node);
+        while(!q.empty()){
+            int nod=q.front();
+            q.pop();
+            
+            for(auto it: adj[nod]){
+                if(vis[it]==-1){
+                    vis[it]=!vis[nod];
+                    q.push(it);
+                }else if(vis[it]==vis[nod]){
+                    return false;
+                }
+            }
+            
+        }
+        return true;
+    }
+
+    bool possibleBipartition(int n, vector<vector<int>>& dislikes) {
+        vector<vector<int>>mat(n,vector<int>(n,0));
+        for(int i=0;i<dislikes.size();i++){
+           int p1=dislikes[i][0]-1;
+           int p2=dislikes[i][1]-1;
+           mat[p1][p2]=1;
+           mat[p2][p1]=1;
+        }
+        vector<vector<int>>adj;
+        for(int i=0;i<n;i++){
+            vector<int>v;
+            for(int j=0;j<n;j++){
+                if(mat[i][j]==1){
+                    v.push_back(j);
+                }
+            }
+            adj.push_back(v);
+        }
+        int V=n;
+        vector<int>vis(V,-1);
+	    for(int i=0;i<V;i++){
+	        if(vis[i]==-1){
+	            if(bfs(i,adj,V,vis)==false)
+	                return false;
+	        }
+	    }
+	    return true;
+    }
+};
