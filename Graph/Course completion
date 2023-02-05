@@ -1,0 +1,68 @@
+/*
+Course Schedule
+
+There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai.
+
+For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1.
+Return true if you can finish all courses. Otherwise, return false.
+
+Input: numCourses = 2, prerequisites = [[1,0]]
+Output: true
+Explanation: There are a total of 2 courses to take. 
+To take course 1 you should have finished course 0. So it is possible.
+
+Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
+Output: false
+Explanation: There are a total of 2 courses to take. 
+To take course 1 you should have finished course 0, and to take course 0 you should also have finished course 1. So it is impossible.
+
+
+*/
+
+
+class Solution {
+public:
+
+    bool dfs(int i, vector<int>&vis, vector<int>&path,vector<vector<int>>&adj){
+        vis[i]=1;
+        path[i]=1;
+        for(auto it:adj[i]){
+            if(vis[it]==-1){
+                if(dfs(it,vis,path,adj)==false)
+                    return false;
+            }
+            else{
+                if(path[it]==1)return false;
+            }
+        }
+        path[i]=0;
+        return true;
+    }
+
+    bool canFinish(int n, vector<vector<int>>& prerequisites) {
+        vector<vector<int>>mat(n,vector<int>(n,0));
+        for(int i=0;i<prerequisites.size();i++){
+           int p1=prerequisites[i][0];
+           int p2=prerequisites[i][1];
+           mat[p1][p2]=1;
+        }
+        vector<vector<int>>adj;
+        for(int i=0;i<n;i++){
+            vector<int>v;
+            for(int j=0;j<n;j++){
+                if(mat[i][j]==1){
+                    v.push_back(j);
+                }
+            }
+            adj.push_back(v);
+        }
+        vector<int>vis(n,-1);
+        vector<int>path(n,0);
+        for(int i=0;i<n;i++){
+            if(vis[i]==-1){
+                if(dfs(i,vis,path,adj)==false)return false;
+            }
+        }
+        return true;
+    }
+};
