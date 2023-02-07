@@ -1,0 +1,89 @@
+/*
+Number of Closed Islands
+
+Given a 2D grid consists of 0s (land) and 1s (water).  An island is a maximal 4-directionally connected group of 0s and a closed island is an island totally (all left, top, right, bottom) surrounded by 1s.
+
+Return the number of closed islands.
+
+Input: grid = [[1,1,1,1,1,1,1,0],[1,0,0,0,0,1,1,0],[1,0,1,0,1,1,1,0],[1,0,0,0,0,1,0,1],[1,1,1,1,1,1,1,0]]
+Output: 2
+
+
+Input: grid = [[0,0,1,0,0],[0,1,0,1,0],[0,1,1,1,0]]
+Output: 1
+
+
+
+*/
+
+
+class Solution {
+public:
+
+    void dfs(int i, int j, vector<vector<int>>&vis, vector<vector<int>>& board,int r, int c){
+        vis[i][j]=1;
+        vector<int>dir={-1,0,1,0,-1};
+        for(int k=0;k<4;k++){
+            int nr=i+dir[k];
+            int nc=j+dir[k+1];
+            if(nr>=0 && nr<r && nc>=0 && nc<c && vis[nr][nc]==0 && board[nr][nc]==0){
+                dfs(nr,nc,vis,board,r,c);
+            }
+        }
+    }
+
+    void solve(vector<vector<int>>& board) {
+        int r=board.size(),c=board[0].size();
+        vector<vector<int>>vis(r,vector<int>(c,0));
+        for(int i=0;i<r;i++){
+            for(int j=0;j<c;j++){
+                if((i==0 || j==0 || i==r-1 || j==c-1) && board[i][j]==0){
+                    dfs(i,j,vis,board,r,c);
+                }
+            }
+        }
+        for(int i=0;i<r;i++){
+            for(int j=0;j<c;j++){
+                if(board[i][j]==0 && vis[i][j]==1){
+                    board[i][j]=1;
+                }
+            }
+        }
+        
+    }
+
+    int closedIsland(vector<vector<int>>& grid) {
+        solve(grid);
+        int r=grid.size(),c=grid[0].size();
+        vector<vector<int>>vis(r,vector<int>(c,-1));
+        vector<int>dir={-1,0,1,0,-1};
+        //vector<int>dirc={+1,-1,-1,+1,-1,0,+1,0};
+        int cnt=0;
+        for(int i=0;i<r;i++){
+            for(int j=0;j<c;j++){
+                if(grid[i][j]==0 && vis[i][j]==-1){
+                    cnt++;
+                    vis[i][j]=1;
+                    queue<pair<int,int>>q;
+                    q.push({i,j});
+                    while(!q.empty()){
+                        int rv=q.front().first;
+                        int rc=q.front().second;
+                        q.pop();
+                        for(int i=0;i<4;i++){ 
+                            int nr=rv+dir[i];
+                            int nc=rc+dir[i+1];
+                            if(nr>=0 && nr<r && nc>=0 && nc<c && vis[nr][nc]==-1 && grid[nr][nc]==0){
+                                vis[nr][nc]=1;
+                                q.push({nr,nc});
+                            }
+                            
+                        }
+                    }
+                }
+            }
+        }
+        return cnt;
+
+    }
+};
