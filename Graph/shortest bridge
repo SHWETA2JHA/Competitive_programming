@@ -1,0 +1,95 @@
+/*
+Shortest Bridge
+You are given an n x n binary matrix grid where 1 represents land and 0 represents water.
+
+An island is a 4-directionally connected group of 1's not connected to any other 1's. There are exactly two islands in grid.
+
+You may change 0's to 1's to connect the two islands to form one island.
+
+Return the smallest number of 0's you must flip to connect the two islands.
+
+Input: grid = [[0,1],[1,0]]
+Output: 1
+
+Input: grid = [[0,1,0],[0,0,0],[0,0,1]]
+Output: 2
+
+Input: grid = [[1,1,1,1,1],[1,0,0,0,1],[1,0,1,0,1],[1,0,0,0,1],[1,1,1,1,1]]
+Output: 1
+
+
+*/
+
+class Solution {
+public:
+    int shortestBridge(vector<vector<int>>& grid) {
+        int r=grid.size(),c=grid[0].size();
+        vector<vector<int>>vis(r,vector<int>(c,-1));
+        vector<int>dir={-1,0,1,0,-1};
+        vector<pair<int,int>>v1;
+        vector<pair<int,int>>v2;
+        int cnt=1;
+        for(int i=0;i<r;i++){
+            for(int j=0;j<c;j++){
+                if(grid[i][j]==1 && vis[i][j]==-1){
+                    if(cnt==1){
+                        vis[i][j]=1;
+                        queue<pair<int,int>>q;
+                        q.push({i,j});
+                        while(!q.empty()){
+                            int rv=q.front().first;
+                            int rc=q.front().second;
+                            v1.push_back({rv,rc});
+                            q.pop();
+                            for(int i=0;i<4;i++){ 
+                                int nr=rv+dir[i];
+                                int nc=rc+dir[i+1];
+                                if(nr>=0 && nr<r && nc>=0 && nc<c && vis[nr][nc]==-1 && grid[nr][nc]==1){
+                                    vis[nr][nc]=1;
+                                    q.push({nr,nc});
+                                }
+                                
+                            }
+                        }
+                    }
+                    else if(cnt==2){
+                        vis[i][j]=1;
+                        queue<pair<int,int>>q;
+                        q.push({i,j});
+                        while(!q.empty()){
+                            int rv=q.front().first;
+                            int rc=q.front().second;
+                            v2.push_back({rv,rc});
+                            q.pop();
+                            for(int i=0;i<4;i++){ 
+                                int nr=rv+dir[i];
+                                int nc=rc+dir[i+1];
+                                if(nr>=0 && nr<r && nc>=0 && nc<c && vis[nr][nc]==-1 && grid[nr][nc]==1){
+                                    vis[nr][nc]=1;
+                                    q.push({nr,nc});
+                                }
+                                
+                            }
+                        }
+                    }
+                    cnt++;
+                }
+            }
+        }
+
+        int res=INT_MAX;
+        for(int i=0;i<v1.size();i++){
+            for(int j=0;j<v2.size();j++){
+                int x1=v1[i].first;
+                int y1=v1[i].second;
+                int x2=v2[j].first;
+                int y2=v2[j].second;
+                int d=abs(x2-x1)+abs(y2-y1)-1;
+                res=min(d,res);
+            }
+        }
+        return res;
+    }
+};
+
+
