@@ -1,0 +1,42 @@
+class Solution {
+public:
+    vector<vector<int>> dp; 
+    int deleteAndEarn(vector<int>& nums) {
+        map<int,int> mp;
+        for(int i=0;i<nums.size();i++)
+        mp[nums[i]]++;
+        vector<vector<int>> v(mp.size()+1,vector<int>(2,0));
+        int i=0;
+        for(auto it: mp)
+        {
+            v[i][0]=it.first;
+            v[i++][1]=it.second;
+        }
+         dp.resize(v.size()+2,vector<int>(2,-1));
+         return solution(v,0,1);
+    }
+    int solution(vector<vector<int>>& nums,int i,int next)
+    {
+        if(i==nums.size()-1)
+        return 0;
+        if(dp[i][next]!=-1)
+        return dp[i][next];
+        if(next)
+        {
+            int a=0;
+            if(nums[i+1][0]!=nums[i][0]+1)
+            {
+                a+=solution(nums,i+1,1)+nums[i][0]*nums[i][1];
+            }
+            else
+            {
+                a+=solution(nums,i+1,0)+nums[i][0]*nums[i][1];
+            }
+            int b=solution(nums,i+1,1);
+            return dp[i][next]=max(a,b);
+        }
+        else
+        return dp[i][next]=solution(nums,i+1,1);
+
+    }
+};
