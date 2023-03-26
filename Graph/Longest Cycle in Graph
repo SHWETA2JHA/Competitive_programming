@@ -1,0 +1,38 @@
+class Solution {
+public:
+    int longestCycle(vector<int> &edges) {
+        int n = edges.size();
+        int ans=-1;
+        vector<int> vis(n,0);
+        vector<int> dp(n,0);
+    
+        for (int start = 0; start < n; start++) {
+            if (!vis[start]) { 
+                int slow = start, fast = start;
+                while (edges[fast] != -1 && edges[edges[fast]] != -1) { 
+                    slow = edges[slow];
+                    fast = edges[edges[fast]];
+                    if (slow == fast) {
+                        int cycleLen = 1;
+                        slow = edges[slow];
+                        while (slow != fast) {
+                            cycleLen++;
+                            slow = edges[slow];
+                        }
+                        ans = max(ans, cycleLen);
+                        dp[start] = cycleLen;
+                        vis[start] = true;
+                        break;
+                    }
+                    if (dp[slow] != 0) {
+                        dp[start] = dp[slow]; 
+                        vis[start] = true; 
+                        break;
+                    }
+                }
+            }
+        }
+        
+        return ans;
+    }
+};
