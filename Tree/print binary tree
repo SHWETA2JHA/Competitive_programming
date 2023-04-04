@@ -1,0 +1,63 @@
+/*
+Print Binary Tree: Given the root of a binary tree, construct a 0-indexed m x n string matrix res that represents a formatted layout of the tree. The formatted layout matrix should be constructed using the following rules:
+
+The height of the tree is height and the number of rows m should be equal to height + 1.
+The number of columns n should be equal to 2height+1 - 1.
+Place the root node in the middle of the top row (more formally, at location res[0][(n-1)/2]).
+For each node that has been placed in the matrix at position res[r][c], place its left child at res[r+1][c-2height-r-1] and its right child at res[r+1][c+2height-r-1].
+Continue this process until all the nodes in the tree have been placed.
+Any empty cells should contain the empty string "".
+Return the constructed matrix res.
+
+
+Input: root = [1,2]
+Output: 
+[["","1",""],
+ ["2","",""]]
+
+
+Input: root = [1,2,3,null,4]
+Output: 
+[["","","","1","","",""],
+ ["","2","","","","3",""],
+ ["","","4","","","",""]]
+
+ 
+ */
+class Solution {
+public:
+int n=0; 
+    int height(TreeNode* root){
+        if(root==NULL)return 0;
+        n++;
+        int lh=height(root->left);
+        int rh=height(root->right);
+        return 1+max(lh,rh);
+    }
+
+    void add(vector<vector<string>>&ans, int r, int c, int ht, TreeNode* root){
+        if(root==NULL)return ;
+        if(root->left!=NULL){
+            int r1=r+1;
+            int c1=c-pow(2,(ht-r-1));
+            ans[r1][c1]=to_string((root->left)->val);
+            add(ans,r1,c1,ht,root->left);
+        }
+        if(root->right!=NULL){
+            int r1=r+1;
+            int c1=c+pow(2,(ht-r-1));
+            ans[r1][c1]=to_string((root->right)->val);
+            add(ans,r1,c1,ht,root->right);
+        }
+    }
+
+    vector<vector<string>> printTree(TreeNode* root) {
+        int ht=height(root)-1;
+        int p=pow(2,(ht+1))-1;
+        vector<vector<string>>ans(ht+1,vector<string>(p,""));
+        int r=0,c=(p-1)/2;
+        ans[r][c]=to_string(root->val);
+        add(ans,r,c,ht,root);
+        return ans;
+    }
+};
